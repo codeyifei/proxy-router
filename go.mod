@@ -1,4 +1,4 @@
-module github.com/codeyifei/goproxy
+module github.com/codeyifei/proxy-router
 
 go 1.16
 

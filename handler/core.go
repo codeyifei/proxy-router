@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/codeyifei/goproxy/types"
+	"github.com/codeyifei/proxy-router/types"
 )
 
 var (

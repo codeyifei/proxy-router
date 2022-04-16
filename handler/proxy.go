@@ -5,7 +5,7 @@ import (
 	"net/http/httputil"
 	"strings"
 
-	"github.com/codeyifei/goproxy/types"
+	"github.com/codeyifei/proxy-router/types"
 )
 
 type ProxyHandler struct {

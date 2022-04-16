@@ -6,8 +6,8 @@ import (
 
 	_ "github.com/spf13/viper"
 
-	"github.com/codeyifei/goproxy/config"
-	"github.com/codeyifei/goproxy/middleware"
+	"github.com/codeyifei/proxy-router/config"
+	"github.com/codeyifei/proxy-router/middleware"
 	"github.com/gorilla/mux"
 	"golang.org/x/sync/errgroup"
 )

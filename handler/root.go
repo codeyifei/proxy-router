@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/codeyifei/goproxy/types"
+	"github.com/codeyifei/proxy-router/types"
 	"github.com/creasty/defaults"
 )
 

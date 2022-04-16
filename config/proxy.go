@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/codeyifei/goproxy/handler"
-	"github.com/codeyifei/goproxy/types"
+	"github.com/codeyifei/proxy-router/handler"
+	"github.com/codeyifei/proxy-router/types"
 	"github.com/creasty/defaults"
 )
 
