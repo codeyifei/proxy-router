@@ -1,10 +1,11 @@
 package types
 
 type Proxy struct {
+	Scheme  string
 	Host    string
 	BaseUri string
 }
 
-func NewProxy(host, baseUri string) Proxy {
-	return Proxy{host, baseUri}
+func NewProxy(scheme, host, baseUri string) Proxy {
+	return Proxy{scheme, host, baseUri}
 }

@@ -1,0 +1,21 @@
+#redis配置
+#redis:
+#  host: redis
+#  port: 6379
+#  pass: pass
+#  db: 0
+#服务器配置
+#servers:
+#- port: 80 # 监听80端口
+#  routes:
+#  - prefix: / # 路由前缀
+#    core: true # 是否需要跨域
+#    type: root # 代理静态文件
+#    staticPath: dist # 静态文件存放路径
+#    indexPaths: # 路由重写文件，默认index.html
+#    - index.html
+#  - prefix: /api
+#    type: proxy # 代理其他网址
+#    scheme: http # 默认http
+#    host: api.server.test # 代理的域名
+#    baseUri: /v1 # 重写的访问地址

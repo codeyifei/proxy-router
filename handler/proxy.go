@@ -23,7 +23,7 @@ func NewProxyHandler(pathPrefix string, proxy types.Proxy) *ProxyHandler {
 func (h ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reverseProxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			req.URL.Scheme = "http"
+			req.URL.Scheme = h.Proxy.Scheme
 			req.URL.Host = h.Proxy.Host
 			req.Host = h.Proxy.Host
 			req.URL.Path = h.Proxy.BaseUri + strings.TrimPrefix(r.URL.Path, h.PathPrefix)
@@ -32,4 +32,4 @@ func (h ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reverseProxy.ServeHTTP(w, r)
 }
 
-var _ http.Handler = (*ProxyHandler)(nil)
+var _ types.Handler = (*ProxyHandler)(nil)

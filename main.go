@@ -1,33 +1,35 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/codeyifei/goproxy/handler"
+	_ "github.com/spf13/viper"
+
+	"github.com/codeyifei/goproxy/config"
 	"github.com/codeyifei/goproxy/middleware"
-	"github.com/codeyifei/goproxy/types"
 	"github.com/gorilla/mux"
+	"golang.org/x/sync/errgroup"
 )
 
-var proxyMap = map[string]types.Proxy{
-	"/api":                                types.NewProxy("api.unified-authority.server.test", "/v1"),
-	"/upload-operating":                   types.NewProxy("api.operating.server.test", "/"),
-	"/unified-authority-api":              types.NewProxy("api.unified-authority.server.test", "/v1"),
-	"/unified-authority-upload-operating": types.NewProxy("api.operating.server.test", "/"),
-}
-
 func main() {
-	r := mux.NewRouter()
-	for k, v := range proxyMap {
-		r.PathPrefix(k).Handler(handler.NewProxyHandler(k, v))
-	}
-	r.PathPrefix("/").Handler(handler.NewRootHandler("dist", "index.html"))
-	// 404
-	r.NotFoundHandler = handler.NewNotFoundHandler()
-	r.Use(middleware.AccessLog)
-
-	s := &http.Server{Addr: ":80", Handler: r}
-	if err := s.ListenAndServe(); err != nil {
+	g := errgroup.Group{}
+	conf, err := config.GetConfig()
+	if err != nil {
 		panic(err)
+	}
+	for _, server := range conf {
+		g.Go(func() error {
+			r := mux.NewRouter()
+			server.Routers.Register(r)
+			// 404
+			r.Use(middleware.AccessLog)
+
+			return http.ListenAndServe(fmt.Sprintf(":%d", server.Port), r)
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		panic(fmt.Errorf("服务启动失败 %w", err))
 	}
 }
