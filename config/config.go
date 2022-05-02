@@ -17,16 +17,12 @@ var conf []Config
 func GetConfig() ([]Config, error) {
 	var err error
 	once.Do(func() {
-		viper.AddConfigPath(".")
-		var homeDir string
-		homeDir, err = os.UserHomeDir()
+		// 设置配置文件
+		err = setConfigFile(err)
 		if err != nil {
-			err = fmt.Errorf("获取用户目录失败 %w", err)
+			err = fmt.Errorf("配置文件设置失败 %w", err)
 			return
 		}
-		viper.AddConfigPath(filepath.Join(homeDir, ".proxy-router"))
-		viper.SetConfigType("yaml")
-		viper.SetConfigName("config")
 		// 读取配置文件
 		err = viper.ReadInConfig()
 		if err != nil {
@@ -44,7 +40,7 @@ func GetConfig() ([]Config, error) {
 				confMap := viper.GetStringMap(fmt.Sprintf("servers.%d.routes.%d", i, j))
 				var config RouterConfig
 				switch confMap["type"] {
-				case "root":
+				case "root", "static":
 					config = NewRootRouterConfig(
 						cast.ToString(confMap["prefix"]),
 						cast.ToString(confMap["staticPath"]),
@@ -55,17 +51,37 @@ func GetConfig() ([]Config, error) {
 						cast.ToString(confMap["scheme"]),
 						cast.ToString(confMap["host"]),
 						cast.ToString(confMap["baseUri"]))
+				case "websocket", "ws":
+					// TODO: websocket待支持
 				}
 				if cast.ToBool(confMap["core"]) {
-					// config = NewCore
 					config.EnableCore()
 				}
 				routers = append(routers, config)
 			}
 			conf = append(conf, NewConfig(
+				viper.GetString(fmt.Sprintf("servers.%d.host", i)),
 				viper.GetUint(fmt.Sprintf("servers.%d.port", i)),
 				routers...))
 		}
 	})
 	return conf, err
+}
+
+func setConfigFile(err error) error {
+	if configFile := os.Getenv("PROXY_ROUTER_CONFIG"); configFile == "" {
+		viper.AddConfigPath(".")
+		var homeDir string
+		homeDir, err = os.UserHomeDir()
+		if err != nil {
+			return fmt.Errorf("获取用户目录失败 %w", err)
+		}
+		viper.AddConfigPath(filepath.Join(homeDir, ".proxy-router"))
+		viper.AddConfigPath("/etc/proxy-router")
+		viper.SetConfigType("yaml")
+		viper.SetConfigName("config")
+	} else {
+		viper.SetConfigFile(configFile)
+	}
+	return err
 }

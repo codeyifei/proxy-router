@@ -19,3 +19,12 @@
 #    scheme: http # 默认http
 #    host: api.server.test # 代理的域名
 #    baseUri: /v1 # 重写的访问地址
+
+servers:
+- port: 8888
+  routes:
+  - prefix: /
+    type: proxy
+    scheme: https
+    host: madou.club
+    baseUri: /

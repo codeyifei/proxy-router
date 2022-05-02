@@ -10,13 +10,14 @@ import (
 )
 
 type Config struct {
+	Host    string
 	Port    uint
 	Routers RouterConfigSlice
 }
 
-func NewConfig(port uint, routers ...RouterConfig) Config {
+func NewConfig(host string, port uint, routers ...RouterConfig) Config {
 	sort.Sort(RouterConfigSlice(routers))
-	return Config{port, routers}
+	return Config{host, port, routers}
 }
 
 type RouterConfig interface {

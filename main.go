@@ -25,11 +25,11 @@ func main() {
 			// 404
 			r.Use(middleware.AccessLog)
 
-			return http.ListenAndServe(fmt.Sprintf(":%d", server.Port), r)
+			return http.ListenAndServe(fmt.Sprintf("%s:%d", server.Host, server.Port), r)
 		})
 	}
 
-	if err := g.Wait(); err != nil {
+	if err = g.Wait(); err != nil {
 		panic(fmt.Errorf("服务启动失败 %w", err))
 	}
 }
